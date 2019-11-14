@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <p>
+    <label for="question">提问：</label>
+    <input type="text" value="" id="question" />
+    <button>获取结果</button>
+  </p>
+  <pre id="log"></pre>
+
+  <script>
+    window.onload = function () {
+      const btn = document.querySelector("button");
+      btn.addEventListener("click", function () {
+        var content =  question.value;
+        // setup websocket with callbacks
+        var ws = new WebSocket('ws://localhost:8080/');
+        ws.onopen = function () {
+          ws.send(content)
+        };
+        ws.onclose = function () {
+          log('DISCONNECT');
+        };
+
+        ws.onmessage = function (event) {
+          // 检测返回的数据类型 如果是文本则直接查询
+          // 也可能是二进制 blob或者arrayBuffer
+          switch (typeof event.data) {
+            case "string":
+              log('reply: ' + event.data);
+              break;
+          }
+        };
+      });
+      // helper function: log message to screen
+      function log(msg) {
+        document.getElementById('log').textContent += msg + '\n';
+      }
+    }
+
+  </script>
+</body>
+
+</html>

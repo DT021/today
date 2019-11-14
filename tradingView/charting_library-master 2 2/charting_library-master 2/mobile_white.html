@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<title>TradingView Charting Library demo -- Mobile (white)</title>
+
+		<!-- Fix for iOS Safari zooming bug -->
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+		<script type="text/javascript" src="charting_library/charting_library.min.js"></script>
+		<script type="text/javascript" src="datafeeds/udf/dist/polyfills.js"></script>
+		<script type="text/javascript" src="datafeeds/udf/dist/bundle.js"></script>
+		<script type="text/javascript">
+			function initOnReady() {
+				var widget = new TradingView.widget({
+					fullscreen: true,
+					symbol: 'AAPL',
+					interval: 'D',
+					container_id: "tv_chart_container",
+					//	BEWARE: no trailing slash is expected in feed URL
+					datafeed: new Datafeeds.UDFCompatibleDatafeed("https://demo_feed.tradingview.com"),
+					library_path: "charting_library/",
+					locale: "en",
+					// disabled_features: ["use_localstorage_for_settings"],
+					preset: "mobile",
+					disabled_features: [
+						// 列出的属性全部隐藏
+						"volume_force_overlay", //k线与柱状图分离
+						"header_symbol_search", //禁用搜索框
+						"header_saveload", // 上传下载图标
+						"header_chart_type", // 头部k线形状
+						"header_resolutions", // 时间刻度
+						"header_undo_redo", //左右箭头
+						"header_screenshot", // 截图
+						"header_interval_dialog_button",
+						"show_interval_dialog_on_key_press",
+						"symbol_search_hot_key",
+						"study_dialog_search_control",
+						"display_market_status",
+						"header_compare",
+						"edit_buttons_in_legend",
+						"symbol_info",
+						"border_around_the_chart",
+						"main_series_scale_menu",
+						"star_some_intervals_by_default",
+						"datasource_copypaste",
+						"right_bar_stays_on_scroll",
+						"context_menus",
+						"go_to_date",
+						"compare_symbol",
+						"border_around_the_chart",
+						"timezone_menu",
+						//"header_resolutions",//todo: przetestowac
+						//"control_bar",//todo: przetestowac
+						//"edit_buttons_in_legend",//todo: przetestowac
+						"remove_library_container_border",
+						"header_interval_dialog_button",
+						// "header_indicators",
+						"main_series_scale_menu",
+						"timeframes_toolbar",
+						"volume_force_overlay",
+						"create_volume_indicator_by_default", //隐藏交易量柱
+						"display_market_status"
+					],
+				});
+			};
+			window.addEventListener('DOMContentLoaded', initOnReady, false);
+		</script>
+
+	</head>
+
+	<body style="margin:0px;">
+		<div id="tv_chart_container"></div>
+	</body>
+
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+
+	<title>TradingView Charting Library demo</title>
+
+	<!-- Fix for iOS Safari zooming bug -->
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+	<script type="text/javascript" src="charting_library/charting_library.min.js"></script>
+	<script type="text/javascript" src="datafeeds/udf/dist/polyfills.js"></script>
+	<script type="text/javascript" src="datafeeds/udf/dist/bundle.js"></script>
+	<script src="./node_modules/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript">
+
+		// function getParameterByName(name) {
+		// 	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		// 	console.log(name);
+		// 	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		// 		results = regex.exec(location.search);
+		// 	return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+		// }
+
+		function init() {
+			var widget = window.tvWidget = new TradingView.widget({
+				debug: false, // uncomment this line to see Library errors and warnings in the console
+				symbol: 'ETH/BTC',    //币名称
+				interval: '30',   //默认显示规则
+				container_id: "tv_chart_container", //`id`属性为指定要包含widget的DOM元素id。
+				timezone: "Asia/Shanghai",    //默认时区
+				// width: 800,         //宽度
+				// height: 800,        //高度
+				fullscreen: true,  //布尔值显示图表是否占用窗口中所有可用的空间。
+				toolbar_bg: "#fff",  //背景色
+				//  BEWARE: no trailing slash is expected in feed URL
+				// datafeed: new Datafeeds.UDFCompatibleDatafeed("https://demo_feed.tradingview.com"),    //请求地址
+				datafeed: new Datafeeds.UDFCompatibleDatafeed("https://demo_feed.tradingview.com"),
+				library_path: "/charting_library/",          //默认脚本核心文件存储位置
+				locale: "zh",     //  语言
+				//  Regression Trend-related functionality is not implemented yet, so it's hidden for a while
+				// drawings_access: {type: 'black', tools: [{name: "Regression Trend"}]}, // 点击灰色回调函数？？
+				// disabled_features: ["left_toolbar","display_market_status","header_chart_type","use_localstorage_for_settings", "header_symbol_search", "header_compare", "header_undo_redo", "header_screenshot", "header_saveload", "go_to_date", "symbol_info"],
+				// 包含功能在默认情况下启用/禁用名称的数组。功能表示图表功能的一部分（更是UI/UX的一部分） http://tradingview.gitee.io/featuresets参考文档
+				enabled_features: ["hide_last_na_study_output", "study_templates"],
+				// 包含功能在默认情况下启用/禁用名称的数组。功能表示图表功能的一部分（更是UI/UX的一部分）  http://tradingview.gitee.io/featuresets 参考文档
+				charts_storage_url: 'https://k.a.mom',  //设置图库页面
+
+				// 下面三项是开发自己的后端用的 前台的请求会带着这三项值
+				charts_storage_api_version: "Index",
+				client_id: 'tradingview.com',
+				user_id: 'public_user_id',
+
+				//禁用
+				disabled_features: [
+					//用户本地存储
+					// "use_localstorage_for_settings",
+					//左边工具栏
+					"left_toolbar",
+					// 顶部工具栏
+					// "header_widget_dom_node",
+					//周围边框
+					"border_around_the_chart",
+					//底部时间栏目
+					"timeframes_toolbar",
+					//k线与销量分开
+					"volume_force_overlay",
+					//图表右键菜单
+					"pane_context_menu",
+					//搜索
+					"header_symbol_search", "symbol_search_hot_key",
+					//左右箭头
+					"header_undo_redo",
+					//compare
+					"header_compare",
+					//图表类型
+					"header_chart_type",
+					//照相机
+					"header_screenshot",
+					//设置按钮
+					//"header_settings",
+					//技术指标线
+					// "header_indicators",
+					//上传下载按钮
+					"header_saveload",
+					//分辨率
+					"header_resolutions",
+					//全屏
+					"header_fullscreen_button"
+				],
+				overrides: {
+					//蜡烛样式
+					"mainSeriesProperties.candleStyle.upColor": "#48b451",
+					"mainSeriesProperties.candleStyle.downColor": "#db000c",
+
+					// 中央价格线宽度
+					// 'mainSeriesProperties.priceLineWidth': 5,
+					//  白色蜡烛样式
+					// "mainSeriesProperties.candleStyle.upColor" : "#F00",
+					// "mainSeriesProperties.candleStyle.downColor" : "#0F0",
+
+					//烛心
+					// "mainSeriesProperties.candleStyle.drawWick" : true,
+					//烛心颜色
+					//"mainSeriesProperties.candleStyle.wickUpColor:" : '#8a3a3b',
+					//"mainSeriesProperties.candleStyle.wickDownColor" : "#8a3a3b",
+
+					//  白色烛心颜色
+					// "mainSeriesProperties.candleStyle.wickUpColor:" : '#8a3a3b',
+					// "mainSeriesProperties.candleStyle.wickDownColor" : "#8a3a3b",
+
+					//边框
+					"mainSeriesProperties.candleStyle.drawBorder": true,
+					//"mainSeriesProperties.candleStyle.borderUpColor" : "#6a833a",
+					//"mainSeriesProperties.candleStyle.borderDownColor" : "#8a3a3b",
+
+					//-----------------------------------------------------------------------
+					//背景
+					// "paneProperties.background" : "#333449",
+					//  画布白色背景颜色
+					"paneProperties.background": "#FFF",
+					//网格线
+					"paneProperties.vertGridProperties.color": "#ebfded",
+					// "paneProperties.vertGridProperties.style" : 0,
+					"paneProperties.horzGridProperties.color": "#ebfded",
+					// "paneProperties.horzGridProperties.style" : 0,
+					//默认收缩行情信息
+					"paneProperties.legendProperties.showLegend": false,
+					//坐标轴和刻度标签颜色
+					"scalesProperties.lineColor": "#cacaca",
+					// "scalesProperties.textColor" : "#fff",
+					"scalesProperties.textColor": "#666666",
+					"mainSeriesProperties.areaStyle.color1": "#5E8BBF",
+					"mainSeriesProperties.areaStyle.color2": "#D9E8F9",
+					"mainSeriesProperties.areaStyle.linecolor": "#5E8BBF",
+					//成交量高度
+					"volumePaneSize": "medium",
+					"MACDPaneSize": "tiny",
+					'scalesProperties.fontSize': 12
+
+				}
+			});
+
+			widget.onChartReady(function () {
+
+				widget.MALine7 = widget.chart().createStudy("Moving Average Exponential", false, false, [5], null, {
+					"plot.color": "#989898",
+					"plot.linewidth": 1
+				});
+				widget.MALine15 = widget.chart().createStudy("Moving Average Exponential", false, false, [10], null, {
+					"plot.color": "#bc8b32",
+					"plot.linewidth": 1
+				});
+				widget.MALine30 = widget.chart().createStudy("Moving Average Exponential", false, false, [30], null, {
+					"plot.color": "#cf30af",
+					"plot.linewidth": 1
+				});
+
+				$(widget.createButton()).attr('title', '分时').addClass("mydate")
+					.html("<span>分时</span>").on(
+						'click',
+						function (e) {
+							showLine(widget, false);
+							saveClass($(this));
+							widget.chart().setChartType(3);
+							widget.chart().setResolution('1',
+								function onReadyCallback() {
+								});
+						});
+				$(widget.createButton()).attr('title', "1min").addClass("mydate button")
+					.html("<span>1m</span>").on(
+						'click',
+						function (e) {
+							showLine(widget, true);
+							saveClass($(this));
+							widget.chart().setChartType(1);
+							widget.chart().setResolution('1',
+								function onReadyCallback() {
+								});
+						});
+				$(widget.createButton()).addClass("mydate").attr('title', "5min")
+					.html("<span>5m</span>").on(
+						'click',
+						function (e) {
+							showLine(widget, true);
+							saveClass($(this));
+							widget.chart().setChartType(1);
+							widget.chart().setResolution('5',
+								function onReadyCallback() {
+								});
+						});
+				$(widget.createButton()).addClass("mydate").attr('title', "15min")
+					.html("<span>15m</span>").on(
+						'click',
+						function (e) {
+							showLine(widget, true);
+							saveClass($(this));
+							widget.chart().setChartType(1);
+							widget.chart().setResolution('15',
+								function onReadyCallback() {
+								});
+						});
+				$(widget.createButton()).addClass("mydate").attr('title', "30min").addClass("mydate button active")
+					.html("<span>30m</span>").on(
+						'click',
+						function (e) {
+							showLine(widget, true);
+							saveClass($(this));
+							widget.chart().setChartType(1);
+							widget.chart().setResolution('30',
+								function onReadyCallback() {
+								});
+						});
+				$(widget.createButton()).addClass("mydate").attr('title', "1hour")
+					.html("<span>1h</span>").on(
+						'click',
+						function (e) {
+							showLine(widget, true);
+							saveClass($(this));
+							widget.chart().setChartType(1);
+							widget.chart().setResolution('60',
+								function onReadyCallback() {
+								});
+						});
+				$(widget.createButton()).addClass("mydate").attr('title', "1day")
+					.html("<span>1D</span>").on(
+						'click',
+						function (e) {
+							showLine(widget, true);
+							saveClass($(this));
+							widget.chart().setChartType(1);
+							widget.chart().setResolution('D',
+								function onReadyCallback() {
+								});
+						});
+			});
+		}
+
+		document.addEventListener("DOMContentLoaded", init);
+
+	</script>
+
+</head>
+
+<body style="margin:0px;">
+	<div id="tv_chart_container"></div>
+</body>
+
+</html>
